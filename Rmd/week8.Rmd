@@ -1,0 +1,78 @@
+---
+title: "PSY 8712 Week 8 Project"
+author: "Mackenzie R Nickle"
+date: "2024-03-16"
+output: 
+  html_document:
+      df_print: paged
+---
+
+# **Reproducible Image and Online Resources**
+
+An image of this project as of *March 15, 2024* can be accessed by clicking [my_binder_shiny_week8](https://mybinder.org/v2/gh/nickl103/psy8712_week8/HEAD).
+
+An interactive web app is available by clicking [Shiny_Week8](https://nickl103.shinyapps.io/shiny_week8/) instead.
+
+# **Script Settings and Resources**
+
+```{r, message=FALSE}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+library(tidyverse)
+library(shiny)
+library(rsconnect)
+```
+
+# **Data Import and Cleaning**
+
+For data import and cleaning, I followed the code from last week with the exception of reverse coding item five (specifically changing timestart to a different format, and factoring and labeling gender and condition) I created average scores using rowMeans and select because it is needed for the data visualization section
+```{r, message=FALSE}
+week8_tbl <- read_csv("../data/week3.csv") %>%
+  mutate(timestart= ymd_hms(timeStart),
+         q5= 6-q5,
+         across(starts_with("q"), as.numeric),
+         condition= factor(condition,
+                           levels=c("A","B","C"),
+                           labels= c("Block A","Block B","Control")),
+         gender= factor(gender,
+                        levels=c("M","F"),
+                        labels= c("Male","Female"))) %>% 
+  mutate(avg_q1q6= rowMeans(select(., q1:q6)),
+         avg_q8q10= rowMeans(select(., q8:q10)))
+```
+
+# **Visualization**
+
+Updated YAML header to include paged so the data would show up in page format on the html file as requested. I used paste0 for selecting columns so that it could easily be changed to a different selection of columns. For data visualization, I used ggplot to create a scatterplot to include various customization options such as geom_smooth and labels. 
+
+```{r, echo=FALSE, message=FALSE}
+select(week8_tbl, paste0("q", 1:6))
+
+week8_tbl %>%
+  ggplot(aes(avg_q1q6, avg_q8q10)) + 
+  geom_point() +
+  geom_smooth(method=lm, color="purple", se=TRUE) +
+  labs(x="Mean Scores on Q1-Q6",
+       y= "Mean Scores on Q8-Q10",
+       title= "Figure 1")
+```
+
+# **Analysis**
+
+
+```{r, echo=FALSE}
+cor.test(week8_tbl$avg_q1q6,week8_tbl$avg_q8q10)
+cor1 <-cor.test(week8_tbl$avg_q1q6,week8_tbl$avg_q8q10)$estimate
+cor2 <- format(cor1, digits=1)
+cor2 <- sub("^0", "", sprintf("%.2f", cor1))
+```
+Based on the correlation test, the correlation between the mean scores for questions 1-6 and for the mean scores for questions 8-10 is `r cor2`. The p-value was not significant at .56 because it is greater than .05. To format the correlation, I used format() from the class slides. 
+
+
+# **Data Export**
+
+I used saveRDS for data export as recommended in the class slides. I dropped timeStart, the specific q numbers, and condition as they were not needed for anything for the shiny app. 
+```{r}
+week8_tbl %>%
+  select(timeEnd, gender, avg_q1q6, avg_q8q10) %>%
+  saveRDS("../shiny/shiny_week8/w8.rds")
+```
