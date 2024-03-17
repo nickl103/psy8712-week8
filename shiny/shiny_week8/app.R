@@ -33,7 +33,7 @@ ui <- fluidPage(
                   "Display or Suppress Error Band",
                   choices = c("Display Error Band", "Suppress Error Band"),
                   selected= "Display Error Band"),
-      #creating ui option for date by using select input so the users can select to include or exclude participants from before July 1, 201
+      #creating ui option for date by using select input so the users can select to include or exclude participants from before July 1, 2017
       selectInput("date",
                   "Include or Exclude Participants before July 1, 2017",
                   choices= c("Include Participants before July 1, 2017", "Exclude Participants before July 1, 2017"),
