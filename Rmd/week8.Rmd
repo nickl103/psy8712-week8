@@ -9,7 +9,7 @@ output:
 
 # **Reproducible Image and Online Resources**
 
-An image of this project as of *March 15, 2024* can be accessed by clicking [my_binder_shiny_week8](https://mybinder.org/v2/gh/nickl103/psy8712_week8/HEAD).
+An image of this project as of *March 16, 2024* can be accessed by clicking [my_binder_shiny_week8](https://mybinder.org/v2/gh/nickl103/psy8712-week8/HEAD).
 
 An interactive web app is available by clicking [Shiny_Week8](https://nickl103.shinyapps.io/shiny_week8/) instead.
 
